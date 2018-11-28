@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/base/jquery-ui.css">
+    
+    <h1>Billetterie</h1>
+    <hr>
+    Date de la visite <br><input type="text" id="datepicker">
+    <hr>
+    {{ form_start(formTicketing) }}
+
+    {{ form_widget(formTicketing) }}
+    <hr>    
+    <button href="/ticketing/checkout" type="submit" class="btn btn-success">Commander</button>
+        
+    {{ form_end(formTicketing) }}
+
+<script src="http://code.jquery.com/jquery.min.js"></script>
+<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script> 
+
+<script>
+  $(function() {
+    $( "#datepicker").datepicker();
+  });
+</script>
+    
+{% endblock %}
