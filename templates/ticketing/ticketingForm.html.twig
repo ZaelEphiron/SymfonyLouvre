@@ -4,17 +4,32 @@
     <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.12/themes/base/jquery-ui.css">
     
     <h1>Billetterie</h1>
+    <!--
     <hr>
     Date de la visite <br><input type="text" id="datepicker">
     <hr>
+    -->
     {{ form_start(formTicketing) }}
-
+    
+    {{ form_row(formTicketing.appointement, {'attr' : {'placeholder': "Date de la visite"} }) }}
+    
+    {{ form_row(formTicketing.firstName, {'attr' : {'placeholder': "Prénom" } }) }}
+    
+    {{ form_row(formTicketing.name, {'attr' : {'placeholder': "Nom"}}) }}
+    
+     {{ form_row(formTicketing.birthdate, {'attr' : {'placeholder': "Date de naissance"} }) }}
+    
+    {{ form_row(formTicketing.country, {'attr' : {'placeholder': "Pays"} }) }}
+    
+    {{ form_row(formTicketing.type, {'attr' : {'placeholder': "Demi-journée"} }) }}
+    
+    {{ form_row(formTicketing.reducedRate, {'attr' : {'placeholder': "Tarif réduit"} }) }}
+    
     {{ form_widget(formTicketing) }}
     <hr>    
-    <button href="/ticketing/checkout" type="submit" class="btn btn-success">Commander</button>
-        
+    
     {{ form_end(formTicketing) }}
-
+    
 <script src="http://code.jquery.com/jquery.min.js"></script>
 <script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8/jquery-ui.min.js"></script> 
 
