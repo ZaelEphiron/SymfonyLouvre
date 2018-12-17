@@ -1,145 +1,307 @@
 <?php
-
 namespace App\Entity;
 
-use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Gedmo\Mapping\Annotation as Gedmo;
+use Symfony\Component\Vvalidator\Constaints as Assert;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\TicketsRepository")
- */
+* Ticket
+*
+* @ORM\Table(name="ticket")
+* @ORM\Entity(repositoryClass="App\Repository\TicketRepository")
+* @ORM\HasLifecycleCallbacks()
+*/
 class Ticket
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
+    * @var string
+    *
+    * @ORM\Column(name="code", type="string", nullable=true)
+    */
+    private $code;
+    
+    /**
+    * @ORM\OneToMany(targetEntity="App\Entity\Visitor", mappedBy="ticket", cascade={"persist"})
+    */
+    private $visitors;
+    
+    /**
+    * @ORM\OneToOne(targetEntity="App\Entity\Bill", cascade={"persist"})
+    * @ORM\JoinColumn(nullable=true)
+    */
+    private $bill = null;
+    
+    /**
+    * @var int
+    *
+    * @ORM\Column(name="id", type="integer")
+    * @ORM\Id
+    * @ORM\GeneratedValue(strategy="AUTO")
+    */
     private $id;
     
     /**
-     * @ORM\Column(type="date")
-     */
-    private $appointement;
+    * @var string
+    *
+    * @ORM\Column(name="email", type="string")
+    */
+    private $email;
     
     /**
-     * @ORM\Column(type="string", length=16)
-     */
-    private $firstname;
-
+    * @var bool
+    *
+    * @ORM\Column(name="half_day", type="boolean")
+    */
+    private $halfDay = false;
+    
     /**
-     * @ORM\Column(type="string", length=32)
-     */
-    private $name;
-
+    * @var date
+    *
+    * @ORM\Column(name="date_visit", type="date")
+    */
+    private $dateVisit;
+    
     /**
-     * @ORM\Column(type="date")
-     */
-    private $birthDate;
-
+    * @var int
+    *
+    * @ORM\Column(name="price", type="integer")
+    */
+    private $price;
+    
     /**
-     * @ORM\Column(type="string", length=16)
-     */
-    private $country;
-
+    * @var int
+    *
+    * @ORM\Column(name="nb_visitor", type="integer")
+    */
+    private $nbVisitor = null;
+    
+    public function __construct()
+    {
+        $this->visitors = new ArrayCollection();
+    }
+    
     /**
-     * @ORM\Column(type="boolean")
-     */
-    private $type;
-
+    * Add visitor
+    *
+    * @param \App\Entity\Visitor $visitor
+    */
+    public function addVisitor(Visitor $visitor)
+    {
+        $this->visitors[] = $visitor;
+        $visitor->setTicket($this);
+        
+        return $this;
+    }
+    
     /**
-     * @ORM\Column(type="boolean")
-     */
-    private $reducedRate;
-
-    public function getId(): ?int
+    * Update visitor
+    *
+    * @param \App\Entity\Visitor $visitor
+    */
+    public function updateVisitor(Visitor $visitor)
+    {
+        $visitor->setTicket($this);
+        
+        return $this;
+    }
+    
+    /**
+    * Remove visitor
+    *
+    * @param \App\Entity\Visitor $visitor
+    */
+    public function removeVisitor(Visitor $visitor)
+    {
+        $this->visitors->removeElement($visitor);
+    }
+    
+    /**
+    * Get visitors
+    *
+    * @param \App\Entity\Visitor $visitor
+    */
+    public function getVisitors()
+    {
+        return $this->visitors;
+    }
+    
+    /**
+    * Get id
+    *
+    * @return int
+    */
+    public function getId()
     {
         return $this->id;
     }
     
-    public function getAppointement(): ?\DateTimeInterface
+    /**
+    * Set halfDay
+    *
+    * @param boolean $halfDay
+    *
+    * @return Ticket
+    */
+    public function setHalfDay($halfDay)
     {
-        return $this->appointement;
-    }
-
-    public function setAppointement(\DateTimeInterface $appointement): self
-    {
-        $this->appointement = $appointement;
-
+        $this->halfDay = $halfDay;
+        
         return $this;
     }
-
-
-    public function getFirstname(): ?string
+    
+    /**
+    * Get halfDay
+    *
+    * @return bool
+    */
+    public function getHalfDay()
     {
-        return $this->firstname;
+        return $this->halfDay;
     }
-
-    public function setFirstname(string $firstname): self
+    
+    /**
+    * Set bill
+    *
+    * @param \App\Entity\Bill $bill
+    *
+    * @return Ticket
+    */
+    public function setBill(\App\Entity\Bill $bill)
     {
-        $this->firstname = $firstname;
-
+        $this->bill = $bill;
+        
         return $this;
     }
-
-    public function getName(): ?string
+    
+    /**
+    * Get bill
+    *
+    * @return \AppBundle\Entity\Bill
+    */
+    public function getBill()
     {
-        return $this->name;
+        return $this->bill;
     }
-
-    public function setName(string $name): self
+    
+    /**
+    * Set price
+    *
+    * @param integer $price
+    *
+    * @return Ticket
+    */
+    public function setPrice($price)
     {
-        $this->name = $name;
-
+        $this->price = $price;
+        
         return $this;
     }
-
-    public function getBirthDate(): ?\DateTimeInterface
+    
+    /**
+    * Get price
+    *
+    * @return integer
+    */
+    public function getPrice()
     {
-        return $this->birthDate;
+        return $this->price;
     }
-
-    public function setBirthDate(\DateTimeInterface $birthDate): self
+    
+    /**
+    * Set NbVisitor
+    *
+    * @param integer $nbVisitor
+    *
+    * @return Ticket
+    */
+    public function setNbVisitor($nbVisitor)
     {
-        $this->birthDate = $birthDate;
-
+        $this->nbVisitor = $nbVisitor;
+        
         return $this;
     }
-
-    public function getCountry(): ?string
+    
+    /** 
+    * Get nbVisitor
+    *
+    * @return integer
+    */
+    public function getNbVisitor()
     {
-        return $this->country;
+        return $this->nbVisitor;
     }
-
-    public function setCountry(string $country): self
+    
+    /** 
+    * Set dateVisit
+    *
+    * @param \DateTime $dateVisit
+    *
+    * @return Ticket
+    */
+    public function setDateVisit($dateVisit)
     {
-        $this->country = $country;
-
+        $this->dateVisit = $dateVisit;
+        
         return $this;
     }
-
-    public function getType(): ?bool
+    
+    /**
+    * Get dateVisit
+    *
+    * @return \DateTime
+    */
+    public function getDateVisit()
     {
-        return $this->type;
+        return $this->dateVisit;
     }
-
-    public function setType(bool $type): self
+    
+    /**
+    * Set code
+    *
+    * @param string $code
+    *
+    * @return Ticket
+    */
+    public function setCode($code)
     {
-        $this->type = $type;
-
+        $this->code = $code;
+        
         return $this;
     }
-
-    public function getReducedRate(): ?bool
+    
+    /**
+    * Get code
+    *
+    * @return string
+    */
+    public function getCode()
     {
-        return $this->reducedRate;
+        return $this->code;
     }
-
-    public function setReducedRate(bool $reducedRate): self
+    
+    /**
+    * Set email
+    * @param string $email
+    *
+    * @return Ticket
+    */
+    public function setEmail($email)
     {
-        $this->reducedRate = $reducedRate;
-
+        $this->email = $email;
+        
         return $this;
+    }
+    
+    /**
+    * Get email
+    *
+    * @return string
+    */
+    public function getEmail()
+    {
+        return $this->email;
     }
 }
