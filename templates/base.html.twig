@@ -2,44 +2,22 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Musée du Louvre{% endblock %}</title>
-        <link rel="stylesheet"
-              href="https://bootswatch.com/4/flatly/bootstrap.min.css">
+        <title>{% block title %}{{ 'Ticket Louvre' | trans }}{% endblock %}</title>
+        <link rel="icon" type="image/png" sizes="192x192"  href="{{ asset('img/android-icon-192x192.png') }}">
+        <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('img/favicon-32x32.png') }}">
+        <link rel="apple-touch-icon" sizes="180x180" href="{{ asset('img/apple-icon-180x180.png') }}">
+        <meta name="msapplication-TileImage" content="{{ asset('img/ms-icon-144x144.png') }}">
+        <link rel="stylesheet" href="{{ asset('build/app.css') }}">
         {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-          <a class="navbar-brand" href="/">Musée du Louvre</a>
-          
-          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-          </button>
+        {{ include("ticket/header.html.twig") }}
 
-          <div class="collapse navbar-collapse" id="navbarColor02">
-            <ul class="navbar-nav mr-auto">
-              <li class="nav-item active">
-                <a class="nav-link" href="/">Accueil <span class="sr-only">(current)</span></a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/ticketing">Billetterie</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/praticalInformation">Infos pratiques</a>
-              </li>
-            </ul>
-              <form class="form-inline my-2 my-lg-0">
-              <input class="form-control mr-sm-2" type="text" placeholder="Rechercher">
-              <button class="btn btn-secondary my-2 my-sm-0" type="submit">Rechercher</button>
-            </form>
-              
-          </div>
-        </nav>
-        <div class="container">
-            {% block body %}{% endblock %}
-        </div>
+        {% block content %}{% endblock %}
+
+        {{ include("ticket/footer.html.twig") }}
+
         {% block javascripts %}{% endblock %}
+        <script src="{{ asset('build/app.js') }}"></script>
     </body>
-    <footer>
-        <p class="text-center">Musée du Louvre©</p>
-    </footer>
 </html>
