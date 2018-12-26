@@ -37,10 +37,18 @@
 					<div class="title">{{ 'Price'| trans }}</div>
 					<div class="info-list">
 						<ul>
+							<li>{{ 'Child 8euros'| trans }} </li>
+							<li>{{ 'Normal 16euros'| trans }} </li>
+							<li>{{ 'Senior 12euros'| trans }} </li>
+							<li>{{ 'Reduct 10euros'| trans }} </li>
+						</ul>
+                        <!--
+                        <ul>
 							{% for rate in list_rate %}
 								<li>{{ rate.name | capitalize | trans }} : {{ rate.price / 100 }} € - {{ rate.description | trans }}</li>
 							{% endfor %}
 						</ul>
+                        -->
 					</div>
 				</div>
 				<div class="hours info-container">
