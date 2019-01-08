@@ -1,69 +1,34 @@
 <?php
-namespace App\Controller;
 
-use PHPUnit\Framework\TestCase;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+namespace App\Tests\Controller;
 
-use App\Service\CalculVisitors;
-use App\Service\CheckNbVisitor;
-//use Symfony\Component\BrowserKit\Response;
-//use Symfony\Component\BrowserKit\Request;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class TicketAjaxControllerTest extends TestCase
+class TicketAjaxControllerTest extends WebTestCase
 {
-    /**
-    * @Route({"en" : "/calculRate", "fr" : "/calculRate"}, name="ajax_rate", requirements={"_locale": "en|fr"})
+    /*
+    * @test
+    * @group func_ticketAjaxController
     */
-    public function testcalculNormalRateAction(Request $request, CalculVisitors $calculVisitor, CheckNbVisitor $checkNbVisitor)
+    public function testTicketAjaxControllerfail()
     {
-        $stack = [];
-        $this->assertSame(0, count($stack));
-
-        array_push($stack, 'foo');
-        $this->assertSame('foo', $stack[count($stack)-1]);
-        $this->assertSame(1, count($stack));
-
-        $this->assertSame('foo', array_pop($stack));
-        $this->assertSame(0, count($stack));
+        $client = static::createClient();
+        $client->request('GET', '/calculRate');
+        
+        $this->assertEquals(400, $client->getResponse()->getStatusCode());
+        $this->assertContains("Erreur : Is not Ajax request", $client->getResponse()->getContent());
     }
-    
-    public function testcalculChildRateAction(Request $request, CalculVisitors $calculVisitor, CheckNbVisitor $checkNbVisitor)
+    /*
+    * @test
+    * @group func_ticketAjaxController
+    */
+    public function testTicketAjaxController()
     {
-        $stack = [];
-        $this->assertSame(0, count($stack));
-
-        array_push($stack, 'foo');
-        $this->assertSame('foo', $stack[count($stack)-1]);
-        $this->assertSame(1, count($stack));
-
-        $this->assertSame('foo', array_pop($stack));
-        $this->assertSame(0, count($stack));
-    }
-    
-    public function testcalculSeniorRateAction(Request $request, CalculVisitors $calculVisitor, CheckNbVisitor $checkNbVisitor)
-    {
-       $stack = [];
-        $this->assertSame(0, count($stack));
-
-        array_push($stack, 'foo');
-        $this->assertSame('foo', $stack[count($stack)-1]);
-        $this->assertSame(1, count($stack));
-
-        $this->assertSame('foo', array_pop($stack));
-        $this->assertSame(0, count($stack));
-    }
-    
-    public function testcalculReductRateAction(Request $request, CalculVisitors $calculVisitor, CheckNbVisitor $checkNbVisitor)
-    {
-        $stack = [$price, $birthday, $nbVisitorDay, $reducedRate];
-        $this->assertSame('20/03/93', $stack[$birthday]);
-        $this->assertSame(true, $stack[$reducedRate]);
-        array_push($stack, 'reduct');
-
-        $this->assertSame('nbVisitorDay', array_pop($stack));
-        $this->assertSame(999, count($stack[$nbVisitorDay]));
+        $client = static::createClient();
+        $client->request('POST', '/calculRate', ['birthday'=> '2000-01-01' , 'reduction'=> false, 'dateVisit'=> '2018-05-30', 'nbVisitor' => 1]);
+        //var_dump($client->getResponse()->getContent());
+        
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+        $this->assertContains('{"price":1600,"birthday":"2000-01-01T00:00:00+00:00","nbVisitorsDay":999}', $client->getResponse()->getContent());
     }
 }

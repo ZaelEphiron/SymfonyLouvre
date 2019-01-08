@@ -1,256 +1,145 @@
 <?php
+namespace Tests\AppBundle\CalculPrix;
 
-namespace Tests\AppBundle\Entity;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use Symfony\AppBundle\Entity\Visitor;
+use Symfony\AppBundle\Entity\Rate;
+use Symfony\AppBundle\Entity\Ticket;
 
-use AppBundle\Entity\Rate;
-use PHPUnit\Framework\TestCase;
-
-class RateTest extends TestCase
+class PrixBilletTest extends WebTestCase
 {
-    protected $rate;
-    /*
-    public function setUp()
+    public function testPriceToChildRate()
     {
-        $this->rate = new Rate();
-    }
-    */
-    
-    /**
-    * Get id
-    *
-    * @return integer
-    */
-    public function testgetPositiveId()
-    {
-        $rate = new Rate();
-
-        $this->assertSame(1, $rate->getId());    
+        $visitor = new Visitor();
+        
+        $format = 'Y-m-d';
+		
+        $date = \DateTime::createFromFormat($format, '2009-02-15');
+        
+        $visitor->setBirthDate($date);
+        
+        $price = new Ticket();
+        
+        $result = $price->getPrice([$visitor]);
+        
+        $this->assertEquals(800, $result);
     }
     
-    
-    public function testgetNegativeId()
+    public function testPriceToNormalRate()
     {
-        $rate = new Rate();
-
-        $this->assertSame(-1, $rate->getId());    
-    }
-    /**
-    * Set name
-    *
-    * @param string $name
-    *
-    * @return Rate
-    */
-    public function testsetName($name)
-    {
-        $rate = new Rate();
-
-        $this->assertSame('Dupont', $rate->setName('Dupont'));   
+        $visitor = new Visitor();
+        
+        $format = 'Y-m-d';
+		
+        $date = \DateTime::createFromFormat($format, '2000-02-15');
+        
+        $visitor->setBirthDate($date);
+        
+        $price = new Ticket();
+        
+        $result = $price->getPrice([$visitor]);
+        
+        $this->assertEquals(1600, $result);
     }
     
-    public function testsetNoName($name)
+    public function testPriceToSeniorRate()
     {
-        $rate = new Rate();
-
-        $this->assertSame('', $rate->setName(''));   
+        $visitor = new Visitor();
+        
+        $format = 'Y-m-d';
+		
+        $date = \DateTime::createFromFormat($format, '1955-02-15');
+        
+        $visitor->setBirthDate($date);
+        
+        $price = new Ticket();
+        
+        $result = $price->getPrice([$visitor]);
+        
+        $this->assertEquals(1200, $result);
     }
     
-    /**
-    * Get name
-    *
-    * @return string
-    */
-    public function testgetName()
+    public function testPriceToFreeRate()
     {
-        $rate = new Rate();
-
-        $this->assertSame('Dupont', $rate->getName());   
+        $visitor = new Visitor();
+        
+        $format = 'Y-m-d';
+		
+        $date = \DateTime::createFromFormat($format, '2016-02-15');
+        
+        $visitor->setBirthDate($date);
+        
+        $price = new Ticket();
+        
+        $result = $price->getPrice([$visitor]);
+        
+        $this->assertEquals(0, $result);
     }
     
-    public function testgetNoName()
+    public function testPriceToReducedRate()
     {
-        $rate = new Rate();
-
-        $this->assertSame('', $rate->getName());   
+        $visitor = new Visitor();
+        
+        $format = 'Y-m-d';
+		
+        $date = \DateTime::createFromFormat($format, '1994-02-15');
+        
+        $visitor->setBirthDate($date);
+        
+        $visitor->setReducedRate(true);
+        
+        $price = new Ticket();
+        
+        $result = $price->getPrice([$visitor]);
+        
+        $this->assertEquals(1000, $result);
     }
     
-    /**
-    * Set price
-    *
-    * @param integer $price
-    *
-    * @return Rate
-    */
-    public function testsetNormalPrice($price)
+    public function testPriceToReducedSeniorRate()
     {
-        $rate = new Rate();
-
-        $this->assertSame(1600, $rate->setPrice(1600));   
+        $visitor = new Visitor();
+        
+        $format = 'Y-m-d';
+		
+        $date = \DateTime::createFromFormat($format, '1954-02-15');
+        
+        $visitor->setBirthDate($date);
+        
+        $visitor->setReducedRate(true);
+        
+        $price = new Ticket();
+        
+        $result = $price->getPrice([$visitor]);
+        
+        $this->assertEquals(1000, $result);
     }
     
-    public function testsetChildPrice($price)
+    public function testTwoNormalRateAndOneSeniorRate()
     {
-        $rate = new Rate();
-
-        $this->assertSame(800, $rate->setPrice(800));   
-    }
-    
-    public function testsetSeniorPrice($price)
-    {
-        $rate = new Rate();
-
-        $this->assertSame(1200, $rate->setPrice(1200));   
-    }
-    
-    public function testsetReductPrice($price)
-    {
-        $rate = new Rate();
-
-        $this->assertSame(1000, $rate->setPrice(1000));   
-    }
-    
-    /**
-    * Get price
-    *
-    * @return integer
-    */
-    public function testgetNormalPrice()
-    {
-        $rate = new Rate();
-
-        $this->assertSame(1600, $rate->getPrice());   
-    }
-    
-    public function testgetChildPrice()
-    {
-        $rate = new Rate();
-
-        $this->assertSame(800, $rate->getPrice());   
-    }
-    
-    public function testgetSeniorPrice()
-    {
-        $rate = new Rate();
-
-        $this->assertSame(1200, $rate->getPrice());   
-    }
-    
-    public function testgetReductPrice()
-    {
-        $rate = new Rate();
-
-        $this->assertSame(1000, $rate->getPrice());   
-    }
-    
-    /**
-    * Set descritpion
-    *
-    * @param string $description
-    *
-    * @return Rate
-    */
-    public function testsetDescriptionNormalRate($description)
-    {
-        $rate = new Rate();
-
-        $this->assertSame('Normal', $rate->setDescription('Normal'));   
-    }
-    
-    public function testsetDescriptionChildRate($description)
-    {
-        $rate = new Rate();
-
-        $this->assertSame('Child', $rate->setDescription('Child'));   
-    }
-    
-    public function testsetDescriptionSeniorRate($description)
-    {
-        $rate = new Rate();
-
-        $this->assertSame('Senior', $rate->setDescription('Senior'));   
-    }
-    
-    public function testsetDescriptionReductRate($description)
-    {
-        $rate = new Rate();
-
-        $this->assertSame('Reduct', $rate->setDescription('Reduct'));   
-    }
-    
-    /**
-    * Get description
-    *
-    * @return string
-    */
-    public function testgetDescriptionNormalRate()
-    {
-        $rate = new Rate();
-
-        $this->assertSame('Normal', $rate->getDescription());   
-    }
-    
-    public function testgetDescriptionChildRate()
-    {
-        $rate = new Rate();
-
-        $this->assertSame('Child', $rate->getDescription());   
-    }
-    
-    public function testgetDescriptionSeniorRate()
-    {
-        $rate = new Rate();
-
-        $this->assertSame('Senior', $rate->getDescription());   
-    }
-    
-    public function testgetDescriptionReductRate()
-    {
-        $rate = new Rate();
-
-        $this->assertSame('Reduct', $rate->getDescription());   
-    }
-    public function tearDown()
-    {
-        $this->rate = null;
-    }
-    
-    public function setUp()
-    {
-        $kernel = self::bootKernel();
-        $this->service = $kernel->getContainer()->get('ml_ticketing.compute_price');
-    }
-    protected function createBill()
-    {
-        $bill = new Bill();
-        $date = new \DateTime('31-01-2018');
-        $bill->setVisitDay($date);
-        $tickets = array(
-            $ticket1 = $this->createTicket("31-08-1990", 0),
-            $ticket2 = $this->createTicket("31-08-1990", 1),
-            $ticket3 = $this->createTicket("01-01-1958", 0),
-            $ticket4 = $this->createTicket("01-01-1958", 1),
-            $ticket5 = $this->createTicket("01-01-2010", 0),
-            $ticket6 = $this->createTicket("01-01-2015", 0)
-        );
-        foreach ($tickets as $tick) {
-            $bill->addTicket($tick);
-        }
-        return $bill;
-    }
-    public function createTicket($date, $reduction)
-    {
-        $ticket = new Ticket();
-        $birthday = new \DateTime($date);
-        $ticket->setBirthday($birthday);
-        $ticket->setReduction($reduction);
-        return $ticket;
-    }
-
-    public function testGivePrice()
-    {
-        $bill = $this->createBill();
-        $this->service->givePrice($bill);
-        $price = $bill->getTotalPrice();
-        $this->assertEquals(56, $price);
+    	$format = 'Y-m-d';
+        
+        $Bobby = new Visitor();
+        
+        $Manuel= new Visitor();
+        
+        $Armand= new Visitor();
+        
+        $birthDateBobby = \DateTime::createFromFormat($format, '1954-02-15');
+		
+        $Bobby->setBirthDate($birthDateBobby);
+		
+        $BirthDateManuel = \DateTime::createFromFormat($format, '1994-02-15');
+		
+        $Manuel->setBirthDate($birthDateManuel);
+		
+        $birthDateArmand = \DateTime::createFromFormat($format, '1994-06-15');
+		
+        $Armand->setBirthDate($birthDateArmand);
+     
+        $price = new Ticket();
+        
+        $result = $price->getPrice([$Bobby, $Manuel, $Armand]);
+        
+        $this->assertEquals(4400, $result);
     }
 }

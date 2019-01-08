@@ -3,9 +3,9 @@
 namespace Tests\AppBundle\Entity;
 
 use AppBundle\Entity\Bill;
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class BillTest extends TestCase
+class BillTest extends WebTestCase
 {
     protected $bill;
     

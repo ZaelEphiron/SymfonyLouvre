@@ -1,10 +1,10 @@
 <?php
 namespace App\Service;
 
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Entity\Ticket;
 
-class MailerTest extends SwiftMailerTestCase
+class MailerTest extends WebTestCase
 {
     /**
     * @var \Swift_Mailer

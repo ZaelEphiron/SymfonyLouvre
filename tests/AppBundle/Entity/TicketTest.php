@@ -3,9 +3,9 @@
 namespace Tests\AppBundle\Entity;
 
 use AppBundle\Entity\Ticket;
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class TicketTest extends TestCase
+class TicketTest extends WebTestCase
 {
     protected $ticket;
     

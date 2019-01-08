@@ -1,115 +1,64 @@
 <?php
 
-namespace App\Service;
+namespace App\Tests\Service;
 
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
+use App\Service\CheckDate;
 
-class CheckDateTest extends TestCase
+class CheckDateTest extends WebTestCase
 {
+    private $checkDate;
+    
     public function setUp()
     {
-        $kernel = self::bootKernel();
-        $this->service = $kernel->getContainer()->get('ml_ticketing.recover_data');
+        $this->checkDate = new CheckDate();
     }
     
-    public function testRecoverData()
+    /**
+    * @dataProvider dateFirstSemesterProvider
+    */
+    public function testCheckDateFirstSemester($dateVisit, $expected)
     {
-        $data = $this->service->recoverData();
-        $day = $data->daysOff;
-        $dates = $data->datesOff;
-        $time = $data->closingTime;
-        $this->assertEquals(["mardi", "dimanche"], $day);
-        $this->assertEquals(["01/05", "01/11", "25/12"], $dates);
-        $this->assertEquals("14:00:00", $time);
+        $today = new \DateTime('30-12-2017');
+        
+        $result = $this->checkDate->check($dateVisit, $today);
+        
+        $this->assertSame($expected, $result);
     }
-    
-    public function testcheck($dateVisit, $today)
+    public function dateFirstSemesterProvider()
     {
-        // Check Before today at 18h
-        $start = clone $dateVisit;
-        $start->add(new \DateInterval('PT18H'));
-        if ($start < $today) {
-            
-            return false;
-        }
-        
-        // Check After 6 month at midnight
-        $end = clone $today;
-        $end->add(new \DateInterval('P6M'));
-        $end->setTime(23, 59, 59); 
-        if ($dateVisit > $end) {
-            
-            return false;
-        }
-        
-        // Check day is Sunday or Thesday
-        $day = $dateVisit->format('l');
-        if ($day == "Sunday" || $day == "Tuesday") {
-            
-            return false;
-        }
-        //
-        if ($today->format('m') > 7) {
-            
-            $year = $today->format('Y') + 1;
-        
-        } else {
-            
-            $year = $today->format('Y');
-        
-        }
- 
-        $easterDate  = easter_date($year);
-        $easterDay   = date('j', $easterDate);
-        $easterMonth = date('n', $easterDate);
-        $easterYear   = date('Y', $easterDate);
- 
-        $holidays = array(
-            
-            // Dates fixes
-            mktime(0, 0, 0, 1,  1,  $year),  // 1er janvier
-            mktime(0, 0, 0, 5,  1,  $year),  // Fête du travail
-            mktime(0, 0, 0, 5,  8,  $year),  // Victoire des alliés
-            mktime(0, 0, 0, 7,  14, $year),  // Fête nationale
-            mktime(0, 0, 0, 8,  15, $year),  // Assomption
-            mktime(0, 0, 0, 11, 1,  $year),  // Toussaint
-            mktime(0, 0, 0, 11, 11, $year),  // Armistice
-            mktime(0, 0, 0, 12, 5,  $year),  // 5 dec (close)
-            mktime(0, 0, 0, 12, 25, $year),  // Noel
- 
-            // Dates variables
-            mktime(0, 0, 0, $easterMonth, $easterDay + 2,  $easterYear), //Lundi de Pâques
-            mktime(0, 0, 0, $easterMonth, $easterDay + 40, $easterYear), //Jeudi de l'Ascension
-            mktime(0, 0, 0, $easterMonth, $easterDay + 51, $easterYear), //Lundi de Pentecôte
-        );
-        foreach($holidays as $holiday) {
-            
-            $day = new \DateTime();
-            $day->setTimestamp($holiday);
-            
-            if ($dateVisit == $day) {
-                
-                return false;
-            }
-        }
-        
-        return true;
+        return [
+            'Sunday' => [new \DateTime('31-12-2017'), false],
+            'Tuesday'  => [new \DateTime('02-01-2018'), false],
+            'Before today'  => [new \DateTime('29-12-2017'), false],
+            'After 6 month'  => [new \DateTime('31-06-2018'), false],
+            '1 january'  => [new \DateTime('01-01-2018'), false],
+            'Monday easter' => [new \DateTime('02-04-2018'), false],
+            '1 may'  => [new \DateTime('01-05-2018'), false],
+            '8 may' => [new \DateTime('08-05-2018'), false],
+            'Ascension' => [new \DateTime('10-05-2018'), false],
+            'Pentecôte' => [new \DateTime('20-05-2018'), false]
+        ];
     }
-    
-    public function testgetEasterDateYearCurrent()
+    /**
+    * @dataProvider dateSecondSemesterProvider
+    */
+    public function testCheckDateSecondSemester($dateVisit, $expected)
     {
-        $today = new \datetime();
+        $today = new \DateTime('30-6-2018');
         
-        if ($today->format('n') > 7) {
-            
-            $easterDate = easter_date($today->format('Y') + 1) + 43200;
+        $result = $this->checkDate->check($dateVisit, $today);
         
-        } else {
-            
-            $easterDate = easter_date($today->format('Y')) + 43200;
-        
-        }
-        
-        return $easterDate;
+        $this->assertSame($expected, $result);
+    }
+    public function dateSecondSemesterProvider()
+    {
+        return [
+            '14 july' => [new \DateTime('14-07-2018'), false],
+            'Toussaint'  => [new \DateTime('01-11-2018'), false],
+            'Armistice'  => [new \DateTime('11-11-2018'), false],
+            '5 december'  => [new \DateTime('05-12-2018'), false],
+            '1 january'  => [new \DateTime('01-01-2019'), false]
+        ];
     }
 }

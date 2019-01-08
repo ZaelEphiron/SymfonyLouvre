@@ -1,7 +1,7 @@
 <?php
 namespace App\Service;
 
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Service\Mailer;
 use App\Entity\Ticket;
 use App\Entity\Calendar;
@@ -9,7 +9,7 @@ use App\Entity\Bill;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Doctrine\ORM\EntityManagerInterface;
 
-class PaymentTicketTest extends TestCase
+class PaymentTicketTest extends WebTestCase
 {
     private $secretKey = 'sk_test_LyHbv0Jp2mAPaO6CMDfZMfMa';
     private $current = 'eur';

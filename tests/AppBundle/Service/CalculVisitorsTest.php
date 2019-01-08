@@ -1,45 +1,39 @@
 <?php
-namespace App\Service;
 
-use PHPUnit\Framework\TestCase;
-use App\Entity\Ticket;
-//use App\Entity\Calendar;
+namespace App\Tests\Service;
+
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use App\Service\CalculVisitors;
+use App\Entity\Ticket;
 
-class CalculVisitorsTest extends TestCase
+class CalculVisitorsTest extends WebTestCase
 {
-    public function testgetCalculVisitors(Ticket $ticket)
+    private $calculVisitor;
+    
+    public function setUp()
     {
-        $calculVisitors = new CalculVisitors();
-
-        $this->assertSame(1800, $calculVisitor->CalculRate(new DateTime('1993-3-20'), false, new DateTime('2018-12-29')));
+        $this->calculVisitors = new CalculVisitors();
+    }
+    /**
+    * @dataProvider rateProvider
+    */
+    public function testCalculRate($birthday, $reduction, $expected)
+    {
+        $dateVisit = new \DateTime('30-07-2018');
+        
+        $result = $this->calculVisitors->calculRate($birthday, $reduction, $dateVisit);
+        
+        $this->assertSame($expected, $result);
     }
     
-    public function testcalculNormalRate($birthday, $reduction, $dateVisit)
+    public function rateProvider()
     {
-        $calculNormalRate = new CalculVisitors('20/03/1993', false, '10/01/2019');
-
-        $this->assertSame(1800, $ticket->getPrice());
-    }
-    
-    public function testcalculChildRate($birthday, $reduction, $dateVisit)
-    {
-        $ticket = new Ticket('20/03/2012', false, '10/01/2019');
-
-        $this->assertSame(800, $ticket->getPrice());
-    }
-    
-    public function testcalculSeniorRate($birthday, $reduction, $dateVisit)
-    {
-        $ticket = new Ticket('20/03/1940', false, '10/01/2019');
-
-        $this->assertSame(1200, $bill->getPrice());
-    }
-    
-    public function testcalculReductRate($birthday, $reduction, $dateVisit)
-    {
-        $ticket = new Ticket('20/03/1993', true, '10/01/2019');
-
-        $this->assertSame(1000, $bill->getPrice());
+        return [
+            'Standard'  => [new \DateTime('30-07-1973'), false, 1600],
+            'Child'  => [new \DateTime('30-07-2010'), false, 800],
+            'Senior'  => [new \DateTime('30-07-1935'), false, 1200],
+            'Reduction'  => [new \DateTime('30-07-1980'), true, 1000],
+            'Free'  => [new \DateTime('30-07-2016'), false, 0]
+        ];
     }
 }

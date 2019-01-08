@@ -3,9 +3,9 @@
 namespace Tests\AppBundle\Entity;
 
 use AppBundle\Entity\Calendar;
-use PHPUnit\Framework\TestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-class CalendarTest extends TestCase
+class CalendarTest extends WebTestCase
 {
     protected $calendar;
     
@@ -37,28 +37,28 @@ class CalendarTest extends TestCase
      {
         $calendar = new Calendar();
 
-        $this->assertSame('jeudi',$calendar->getDay());   
+        $this->assertSame('Thursday',$calendar->getDay());   
      }
     
     public function testgetBadDay()
      {
         $calendar = new Calendar();
 
-        $this->assertSame('mardi',$calendar->getDay());   
+        $this->assertSame('Tuesday',$calendar->getDay());   
      }
      
      public function testsetGoodDay($day)
      {
         $calendar = new Calendar();
 
-        $this->assertSame('jeudi',$calendar->setDay());   
+        $this->assertSame('Thursday',$calendar->setDay());   
      }
     
      public function testsetBadDay($day)
      {
         $calendar = new Calendar();
 
-        $this->assertSame('mardi',$calendar->setDay());   
+        $this->assertSame('Tuesday',$calendar->setDay());   
      }
      
      public function testgetOneVisitor(): ?int 
