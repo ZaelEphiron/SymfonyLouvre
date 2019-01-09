@@ -18,28 +18,11 @@ class PaymentTicketTest extends WebTestCase
     private $session;
     private $em;
     
-    /*
     public function __construct(Mailer $mailer, SessionInterface $session, EntityManagerInterface $em)
     {
         $this->mailer = $mailer;
         $this->session = $session;
         $this->em = $em;
     }
-    */
     
-    public function teststripe($token, $ticket, $array)
-    {
-        $paymentTicket = new PaymentTicket('sk_test_LyHbv0Jp2mAPaO6CMDfZMfMa', $ticket, $array);
-
-        $this->assertSame(1005, $checkNbVisitor->setNbVisitorDay(1000));
-        
-        // Créer une instance que l'on va pouvoir modifier
-        $stub = $this->getMockBuilder('saveBill')->getMock();
-        // On remplace la méthode getLastPost() et on retourne ce que l'on veut
-        $stub->method('saveBill')->willReturn(['name' => 'Mon article', 'content' => 'fake content']);
-        $this->assertEquals('Mon article', $stub->first()['name']);
-              
-        $this->expectException(InvalidArgumentException::class);
-        
-    }
 }

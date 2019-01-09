@@ -6,6 +6,10 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class TicketControllerTest extends WebTestCase
 {
+    /*
+    * @test
+    * @group func_ticketController
+    */
     public function testIndexBadDate()
     {
         $client = static::createClient();

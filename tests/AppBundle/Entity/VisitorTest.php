@@ -2,18 +2,18 @@
 
 namespace Tests\AppBundle\Entity;
 
-use AppBundle\Entity\Visitor;
+use App\Entity\Visitor;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class VisitorTest extends WebTestCase
 {
-  public function testName()
+  public function testLastname()
     {
         $visitor = $this->getMockForAbstractClass('App\Entity\Visitor');
-        $visitor->setName('Georges');
+        $visitor->setLastName('Georges');
         
-        $this->assertNotNull($visitor->getName());
-        $this->assertEquals('Georges', $visitor->getName());
+        $this->assertNotNull($visitor->getLastName());
+        $this->assertEquals('Georges', $visitor->getLastName());
     }
     
     public function testFirstName()
@@ -34,13 +34,13 @@ class VisitorTest extends WebTestCase
         $this->assertEquals('France', $visitor->getCountry());
     }
     
-    public function testBirth()
+    public function testBirthday()
     {
         $visitor = $this->getMockForAbstractClass('App\Entity\Visitor');
-        $visitor->setBirth('2001-01-01');
+        $visitor->setBirthday('2001-01-01');
         
-        $this->assertNotNull($visitor->getBirth());
-        $this->assertEquals('2001-01-01', $visitor->getBirth());
+        $this->assertNotNull($visitor->getBirthday());
+        $this->assertEquals('2001-01-01', $visitor->getBirthday());
     }
     
     public function testReduction()
@@ -50,5 +50,27 @@ class VisitorTest extends WebTestCase
         
         $this->assertNotNull($visitor->getReduction());
         $this->assertEquals(false, $visitor->getReduction());
+    }
+    
+    public function testSetLastName()
+    {
+        $visitor = new Visitor();
+        $lastname = 'Dupont';
+        $visitor->setLastName($lastname);
+        $this->assertEquals('Dupont', $visitor->getLastName());
+    }
+    public function testSetFirstName()
+    {
+        $visitor = new Visitor();
+        $firstname = 'Jean';
+        $visitor->setFirstName($firstname);
+        $this->assertEquals('Jean', $visitor->getFirstName());
+    }
+    public function testSetCountry()
+    {
+        $visitor = new Visitor();
+        $country = 'France';
+        $visitor->setCountry($country);
+        $this->assertEquals('France', $visitor->getCountry());
     }
 }

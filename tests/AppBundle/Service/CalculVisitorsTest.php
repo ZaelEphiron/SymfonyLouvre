@@ -8,6 +8,8 @@ use App\Entity\Ticket;
 
 class CalculVisitorsTest extends WebTestCase
 {
+    protected $createdAt;
+    
     private $calculVisitor;
     
     public function setUp()
@@ -36,4 +38,14 @@ class CalculVisitorsTest extends WebTestCase
             'Free'  => [new \DateTime('30-07-2016'), false, 0]
         ];
     }
+    /*
+     public function testgetCalculVisitor(Ticket $ticket)
+     {
+        
+        $calculVisitors = new CalculVisitors();
+        $birthday = new \DateTime('01-03-2016');
+        $result = $calculVisitors->getCalculVisitors($birthday);
+        $this->assertEquals(12, $result);
+    }
+    */
 }
